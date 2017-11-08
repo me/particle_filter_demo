@@ -61,10 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#step').click(step);
 
   $(document).keydown(function(e) {
-    if (e.keyCode != 39) {
-      return;
+    if (e.keyCode > 36 && e.keyCode < 40) {
+      step();
     }
-    step();
   });
 
 
