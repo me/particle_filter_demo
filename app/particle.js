@@ -1,9 +1,10 @@
 import gaussian from 'gaussian';
+import Utils from './utils.js';
 
 class Particle {
   constructor(world, x=world.randX(), y=world.randY(), rot=world.randRot(), img='img/red.png') {
     this.img = img;
-    var sprite = PIXI.Sprite.fromImage(img);
+    let sprite = PIXI.Sprite.fromImage(img);
     this.world = world;
     sprite.anchor.set(0.5);
     sprite.width = 20;
@@ -69,7 +70,7 @@ class Particle {
   }
 
   sense() {
-    var seen = [];
+    let seen = [];
     for (let i of this.world.landmarks.keys()) {
       let landmark = this.world.landmarks[i];
       let dist = this.distance(landmark[0], landmark[1]);
@@ -83,7 +84,7 @@ class Particle {
   }
 
   measurementProbability(measurement) {
-    var prob = 1.0;
+    let prob = 1.0;
     for (let i of this.world.landmarks.keys()) {
       let landmark = this.world.landmarks[i];
       let dist = this.distance(landmark[0], landmark[1]);
@@ -99,25 +100,24 @@ class Particle {
       } else {
         p = 1;
       }
-      //console.log(`Dist: ${dist}, ${measurement[i]}, ${p}`)
       prob *= p;
     }
     return prob;
   }
 
   move(turn, forward) {
-    var rotation = this.rotation + turn;
+    let rotation = this.rotation + turn;
     rotation += this.noise(this.turnNoise);
     let circ = 2*Math.PI;
     rotation = ((rotation%circ)+circ)%circ;
 
-    var dist = forward;
+    let dist = forward;
     dist += this.noise(this.forwardNoise);
-    var x = this.x + (Math.cos(this.rotation)*dist);
-    var y = this.y + (Math.sin(this.rotation)*dist);
+    let x = this.x + (Math.cos(this.rotation)*dist);
+    let y = this.y + (Math.sin(this.rotation)*dist);
 
-    x = ((x%this.world.width)+this.world.width)%this.world.width;
-    y = ((y%this.world.height)+this.world.height)%this.world.height;
+    x = Utils.mod(x, this.world.width);
+    y = Utils.mod(y, this.world.height);
 
     this.x = x;
     this.y = y;
@@ -126,19 +126,6 @@ class Particle {
 
   noise(factor) {
     return gaussian(0.0, factor).ppf(Math.random());
-  }
-
-  regenerate() {
-    var sprite = PIXI.Sprite.fromImage(this.img);
-    sprite.x = sprite.x;
-    sprite.anchor.set(0.5);
-    sprite.width = this.sprite.width;
-    sprite.height = this.sprite.height;
-    sprite.x = this.sprite.x;
-    sprite.y = this.sprite.y;
-    sprite.alpha = this.sprite.alpha;
-    sprite.rotation = this.sprite.rotation;
-    this.sprite = sprite;
   }
 
   gaussian(mu, sigma, x) {

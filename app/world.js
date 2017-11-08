@@ -2,12 +2,13 @@ import $ from 'jquery';
 import * as PIXI from 'pixi.js';
 
 class World {
-  constructor(width, height) {
+  constructor(width, height, numLandmarks) {
     this.width = width;
     this.height = height;
     this.landmarks = [];
     this.app = new PIXI.Application(width, height, { antialias: true, backgroundColor : 0xe1e4e8 });
     $('#map')[0].appendChild(this.view);
+    this.numLandmarks = numLandmarks;
     this.landmarks = this.generateLandmarks();
   }
 
@@ -17,7 +18,7 @@ class World {
 
   generateLandmarks() {
     var landmarks = [];
-    for (var i=0; i<5; i++) {
+    for (var i=0; i<this.numLandmarks; i++) {
       var x = this.randX();
       var y = this.randY();
       landmarks.push([x, y]);
