@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let rotate = 0.1;
 
   let step = () => {
-    let measurement = bot.sense();
     bot.move(rotate, forward);
+    let measurement = bot.sense();
     for (let particle of particles) {
       particle.move(rotate, forward);
     }
@@ -59,6 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   $('#step').click(step);
+
+  $(document).keydown(function(e) {
+    if (e.keyCode != 39) {
+      return;
+    }
+    step();
+  });
 
 
 });

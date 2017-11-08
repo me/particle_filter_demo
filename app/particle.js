@@ -18,6 +18,7 @@ class Particle {
     this.forwardNoise = 50.0;
     this.turnNoise = 0.1;
     this.senseNoise = 50.0;
+    this.vision = 200;
   }
 
   get x() {
@@ -72,7 +73,11 @@ class Particle {
     for (let i of this.world.landmarks.keys()) {
       let landmark = this.world.landmarks[i];
       let dist = this.distance(landmark[0], landmark[1]);
-      seen[i] =  dist + this.noise(this.senseNoise);
+      if (dist < this.vision) {
+        seen[i] =  dist + this.noise(this.senseNoise);
+      } else {
+        seen[i] = null;
+      }
     }
     return seen;
   }
@@ -82,7 +87,18 @@ class Particle {
     for (let i of this.world.landmarks.keys()) {
       let landmark = this.world.landmarks[i];
       let dist = this.distance(landmark[0], landmark[1]);
-      let p = this.gaussian(dist, this.senseNoise, measurement[i]);
+      let p;
+      if (dist < this.vision && measurement[i]) {
+        p = this.gaussian(dist, this.senseNoise, measurement[i]);
+      } else if (dist < this.vision) {
+        // dist < vision but no measurement
+        p = this.gaussian(dist, this.senseNoise, this.vision*1.5);
+      } else if (measurement[i]) {
+        // dist > vision and a measurement
+        p = 0;
+      } else {
+        p = 1;
+      }
       //console.log(`Dist: ${dist}, ${measurement[i]}, ${p}`)
       prob *= p;
     }

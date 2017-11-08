@@ -17,7 +17,7 @@ class World {
 
   generateLandmarks() {
     var landmarks = [];
-    for (var i=0; i<4; i++) {
+    for (var i=0; i<5; i++) {
       var x = this.randX();
       var y = this.randY();
       landmarks.push([x, y]);
